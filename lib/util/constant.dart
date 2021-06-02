@@ -4,3 +4,9 @@ const String username = "fullstack.dre";
 
 const String instagramName = "Andreas Notokusumo";
 const String instagramBio = "Andre • Mobile-Dev & UI/UX\nDigital Creator\n🎯 sharing IT and design learning progress\n✨ available for IT and design project \n 🇮🇩 Indonesia based UIX design and mobile-dev enthusiast";
+
+class Constants{
+  static const igClientId = "516570162876078";
+  static const igClientSecret = "0be66e281a50d0b9a02218489e00c212";
+  static const igRedirectURL = "https://selth.com/";
+}

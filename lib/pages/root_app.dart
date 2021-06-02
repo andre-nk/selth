@@ -34,9 +34,7 @@ class _RootAppState extends State<RootApp> {
       child: Padding(
         padding: const EdgeInsets.only(top: 0),
         child: IconButton(
-          onPressed: () {
-            //ADD POST
-          },
+          onPressed: (){},
           icon: SvgPicture.asset(
             icons.last["inactive"],
             color: Theme.of(context).accentColor, 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:instagram_clone/pages/pages.dart';
-import 'package:instagram_clone/providers/provider.dart';
+import 'package:selth/pages/pages.dart';
+import 'package:selth/providers/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -25,7 +25,7 @@ class MyApp extends ConsumerWidget {
       theme: context
           .read(appThemeProvider)
           .getAppThemedata(context, _appThemeState),
-      home: RootApp(),
+      home: AuthPage(),
     );
   }
 }

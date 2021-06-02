@@ -43,5 +43,18 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <activity android:name="clancey.simpleauth.simpleauthflutter.SimpleAuthCallbackActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="selth.com" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -10,20 +10,11 @@ class _AccountPageState extends State<AccountPage> {
   bool drawerOpened = false;
   PageController _controller = new PageController();
   String uName, followers = " ", following, bio, website, profileimage;
-  FlutterInsta flutterInsta = FlutterInsta(); 
-
-  @override
-  void initState() { 
-    super.initState();
-    flutterInsta.getProfileData('linxkaa');
-  }
 
   @override
   Widget build(BuildContext context) {
 
     var size = MediaQuery.of(context).size;
-
-    print(flutterInsta.imgurl);
 
     return Scaffold(
       body: PageView(
@@ -321,9 +312,6 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget getImages(size) {
-
-    List<String> images = flutterInsta.feedImagesUrl;
-
     return Wrap(
       direction: Axis.horizontal,
       spacing: 3,
