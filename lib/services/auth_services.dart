@@ -4,8 +4,9 @@ class AuthServices{
   static Future<Map> loginAndGetData(simpleAuth.InstagramApi _igApi) async {
 
     Map _userData;
+    UserDataSharedUtility userModel = UserDataSharedUtility();
 
-    _igApi.authenticate().then(
+    await _igApi.authenticate().then(
       (simpleAuth.Account _user) async {
         simpleAuth.OAuthAccount user = _user;
 
@@ -21,6 +22,8 @@ class AuthServices{
         );
 
         _userData = igUserResponse.data;
+        userModel.setUserDataJSON(json.encode(_userData));
+        Get.offAndToNamed('/homepage');
       },
     ).catchError(
       (Object e) {

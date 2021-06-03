@@ -25,6 +25,9 @@ class MyApp extends ConsumerWidget {
       theme: context
           .read(appThemeProvider)
           .getAppThemedata(context, _appThemeState),
+      routes: {
+        '/homepage': (context) => RootApp()
+      },
       home: AuthPage(),
     );
   }

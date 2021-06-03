@@ -60,13 +60,7 @@ class _AuthPageState extends State<AuthPage> {
 
                     return ElevatedButton(
                       onPressed: () async {
-                        watch(authProvider(_igApi)).when(
-                          data: (userData){
-                            print(userData);
-                          },
-                          loading: () => print("Loading"),
-                          error: (error, _) => print(error)
-                        );
+                        watch(authProvider(_igApi));
                       },
                       child: Text(
                         "Sign In with Instagram",

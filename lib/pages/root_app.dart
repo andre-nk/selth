@@ -34,7 +34,10 @@ class _RootAppState extends State<RootApp> {
       child: Padding(
         padding: const EdgeInsets.only(top: 0),
         child: IconButton(
-          onPressed: (){},
+          onPressed: () async {
+            var _sharedPreferences = await SharedPreferences.getInstance();
+            print(jsonDecode(_sharedPreferences.getString("userData")));
+          },
           icon: SvgPicture.asset(
             icons.last["inactive"],
             color: Theme.of(context).accentColor, 
