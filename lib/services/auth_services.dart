@@ -1,7 +1,9 @@
 part of 'service.dart';
 
 class AuthServices{
-  static Future<Map> loginAndGetData(simpleAuth.InstagramApi _igApi) async {
+  static Future<Map> loginAndGetData(
+    simpleAuth.InstagramApi _igApi
+  ) async {
 
     Map _userData;
     UserDataSharedUtility userModel = UserDataSharedUtility();
@@ -23,6 +25,8 @@ class AuthServices{
 
         _userData = igUserResponse.data;
         userModel.setUserDataJSON(json.encode(_userData));
+        userModel.setUserToken(user.token);
+
         Get.offAndToNamed('/homepage');
       },
     ).catchError(

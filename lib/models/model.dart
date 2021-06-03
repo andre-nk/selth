@@ -6,4 +6,5 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part "theme_model.dart";
 part 'user_model.dart';
+part 'media_model.dart';
 

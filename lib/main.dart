@@ -20,15 +20,24 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final _appThemeState = watch(appThemeStateProvider);
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: context
           .read(appThemeProvider)
           .getAppThemedata(context, _appThemeState),
       routes: {
-        '/homepage': (context) => RootApp()
+        '/homepage': (context) => RootApp(),
+        '/auth': (context) => AuthPage()
       },
-      home: AuthPage(),
+      home: FutureBuilder<String>(
+        future: context.read(userDataUtilityProvider).getUserDataJSON(),
+        builder: (context, snapshot){
+          return snapshot.data != null
+            ? RootApp()
+            : AuthPage();
+        },
+      ),
     );
   }
 }

@@ -11,17 +11,24 @@ class _RootAppState extends State<RootApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: getBody(),
-      bottomNavigationBar: getBottomNavigationBar(),
-    );
-  }
+      body: FutureBuilder<SharedPreferences>(
+        future: SharedPreferences.getInstance(),
+        builder: (context, snapshot){
 
-  Widget getBody() {
-    return IndexedStack(
-      index: indexPage,
-      children: [
-        AccountPage(),
-      ],
+          print(snapshot.data.getString('userToken'));
+
+          return IndexedStack(
+            index: indexPage,
+            children: [
+              AccountPage(
+                userData: jsonDecode(snapshot.data.getString("userData")),
+                userToken: snapshot.data.getString('userToken'),
+              ),
+            ],
+          );
+        },
+      ),
+      bottomNavigationBar: getBottomNavigationBar(),
     );
   }
 
@@ -35,8 +42,8 @@ class _RootAppState extends State<RootApp> {
         padding: const EdgeInsets.only(top: 0),
         child: IconButton(
           onPressed: () async {
-            var _sharedPreferences = await SharedPreferences.getInstance();
-            print(jsonDecode(_sharedPreferences.getString("userData")));
+            var sharedPref = await SharedPreferences.getInstance();
+            sharedPref.remove('');
           },
           icon: SvgPicture.asset(
             icons.last["inactive"],

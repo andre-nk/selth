@@ -7,3 +7,4 @@ import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 part 'auth_provider.dart';
 part 'theme_provider.dart';
 part 'local_data_provider.dart';
+part 'media_provider.dart';

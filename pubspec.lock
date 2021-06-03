@@ -125,6 +125,13 @@ packages:
       url: "https://pub.dev/"
     source: hosted
     version: "0.9.0"
+  flutter_linkify:
+    dependency: "direct main"
+    description:
+      name: flutter_linkify
+      url: "https://pub.dev/"
+    source: hosted
+    version: "5.0.2"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -198,6 +205,13 @@ packages:
       url: "https://pub.dev/"
     source: hosted
     version: "3.0.2"
+  instagram_public_api:
+    dependency: "direct main"
+    description:
+      name: instagram_public_api
+      url: "https://pub.dev/"
+    source: hosted
+    version: "0.2.3"
   js:
     dependency: transitive
     description:
@@ -219,6 +233,13 @@ packages:
       url: "https://pub.dev/"
     source: hosted
     version: "0.1.2"
+  linkify:
+    dependency: transitive
+    description:
+      name: linkify
+      url: "https://pub.dev/"
+    source: hosted
+    version: "4.0.0"
   matcher:
     dependency: transitive
     description:

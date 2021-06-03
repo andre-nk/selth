@@ -8,9 +8,6 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  
-  Map _userData;
-  String _errorMsg;
 
   @override
   void initState() { 
@@ -64,7 +61,7 @@ class _AuthPageState extends State<AuthPage> {
                       },
                       child: Text(
                         "Sign In with Instagram",
-                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 18, fontWeight: FontWeight.w500)
+                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)
                       ),
                       style: ElevatedButton.styleFrom(
                         primary: HexColor("0195F7")

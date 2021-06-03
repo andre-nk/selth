@@ -28,11 +28,13 @@ dependencies:
   flutter_hex_color: ^2.0.0
   flutter_icons: ^1.1.0
   flutter_launcher_icons: ^0.9.0
+  flutter_linkify: ^5.0.2
   flutter_native_splash: ^1.1.8+4
   flutter_riverpod: ^0.14.0+3
   flutter_slider_drawer: ^2.0.0
   flutter_svg: ^0.22.0
   get: ^4.1.4
+  instagram_public_api: ^0.2.3
   keyboard_avoider: ^0.1.2
   riverpod: ^0.14.0+3
   shared_preferences: ^2.0.6

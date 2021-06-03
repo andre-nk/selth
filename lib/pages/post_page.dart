@@ -4,9 +4,10 @@ class PostPage extends StatefulWidget {
 
   final int index;
   final int length;
-  final List<String> images;
+  final String photoURL;
+  final List<MediaModel> medias;
 
-  const PostPage({Key key, this.index, this.length, this.images}) : super(key: key);
+  const PostPage({Key key, this.index, this.length, this.medias, this.photoURL}) : super(key: key);
 
   @override
   _PostPageState createState() => _PostPageState();
@@ -50,7 +51,7 @@ class _PostPageState extends State<PostPage> {
         child: ListView.builder(
           physics: BouncingScrollPhysics(),
           controller: scrollController,
-          itemCount: widget.images.length,
+          itemCount: widget.medias.length,
           itemBuilder: (context, index){
             return Container(
               height: size.width + size.height * 0.1,
@@ -69,7 +70,7 @@ class _PostPageState extends State<PostPage> {
                             shape: BoxShape.circle,
                             border: Border.all(width: 1, color: bgGrey),
                             image: DecorationImage(
-                              image: NetworkImage(""),
+                              image: NetworkImage(widget.photoURL),
                               fit: BoxFit.cover
                             )
                           ),
@@ -84,7 +85,7 @@ class _PostPageState extends State<PostPage> {
                     width: size.width,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(widget.images[index]),
+                        image: NetworkImage(widget.medias[index].mediaURL),
                         fit: BoxFit.cover
                       )
                     ),

@@ -1,5 +1,11 @@
 part of "pages.dart";
 class AccountPage extends StatefulWidget {
+
+  final Map userData;
+  final String userToken;
+
+  const AccountPage({Key key, this.userData, this.userToken}) : super(key: key);
+
   @override
   _AccountPageState createState() => _AccountPageState();
 }
@@ -9,7 +15,7 @@ class _AccountPageState extends State<AccountPage> {
   int selectedIndex = 0;
   bool drawerOpened = false;
   PageController _controller = new PageController();
-  String uName, followers = " ", following, bio, website, profileimage;
+  FlutterInsta insta = FlutterInsta();
 
   @override
   Widget build(BuildContext context) {
@@ -86,23 +92,45 @@ class _AccountPageState extends State<AccountPage> {
 
                       final _appThemeStateProvider = watch(appThemeStateProvider.notifier);
 
-                      return ListTile(
-                        onTap: (){
-                          _appThemeStateProvider.toggleAppTheme(context);
-                        },
-                        horizontalTitleGap: 0,
-                        leading: Theme.of(context).accentColor == HexColor("000000")
-                          ? Icon(Icons.light_mode_rounded)
-                          : Icon(Icons.dark_mode_rounded, color: Theme.of(context).accentColor),
-                        title: Theme.of(context).accentColor == HexColor("000000")
-                          ? Text(
-                              "Light theme",
-                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16, fontWeight: FontWeight.normal)
-                            )
-                          : Text(
-                              "Dark theme",
-                              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16, fontWeight: FontWeight.normal)
-                            ),
+                      return Column(
+                        children: [
+                          ListTile(
+                            onTap: (){
+                              _appThemeStateProvider.toggleAppTheme(context);
+                            },
+                            horizontalTitleGap: 0,
+                            leading: Theme.of(context).accentColor == HexColor("000000")
+                              ? Icon(Icons.light_mode_rounded)
+                              : Icon(Icons.dark_mode_rounded, color: Theme.of(context).accentColor),
+                            title: Theme.of(context).accentColor == HexColor("000000")
+                              ? Text(
+                                  "Light theme",
+                                  style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16, fontWeight: FontWeight.normal)
+                                )
+                              : Text(
+                                  "Dark theme",
+                                  style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16, fontWeight: FontWeight.normal)
+                                ),
+                          ),
+                          ListTile(
+                            onTap: () async {
+                              var spreferences = await SharedPreferences.getInstance();
+                              spreferences.remove('userData');
+                              Get.offAndToNamed('/auth');
+                            },
+                            horizontalTitleGap: 0,
+                            leading: Icon(Icons.logout_rounded),
+                            title: Theme.of(context).accentColor == HexColor("000000")
+                              ? Text(
+                                  "Log out",
+                                  style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16, fontWeight: FontWeight.normal)
+                                )
+                              : Text(
+                                  "Log out",
+                                  style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16, fontWeight: FontWeight.normal)
+                                ),
+                          ),
+                        ],
                       );
                     } 
                   )
@@ -122,7 +150,7 @@ class _AccountPageState extends State<AccountPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            username,
+            widget.userData['username'],
             style: TextStyle(color: Theme.of(context).accentColor, fontSize: 22, fontWeight: FontWeight.bold),
           ),
           IconButton(
@@ -157,185 +185,205 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
       appBar: getAppBar(size),
-      body: ListView(
-        physics: BouncingScrollPhysics(),
-        children: [
-          Container(height: 0.5, color: Theme.of(context).accentColor.withOpacity(0.25)),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: size.height * 0.02,
-              vertical: size.height * 0.025,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: FutureBuilder<InstaProfileData>(
+        future: insta.getProfileData(widget.userData['username']),
+        builder: (context, user){
+          return user.hasData
+          ? ListView(
+              physics: BouncingScrollPhysics(),
               children: [
-                Container(
-                  width: size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(height: 0.5, color: Theme.of(context).accentColor.withOpacity(0.25)),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.height * 0.02,
+                    vertical: size.height * 0.025,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 1, color: bgGrey),
-                          image: DecorationImage(
-                            image: NetworkImage(profile),
-                            fit: BoxFit.cover
-                          )
-                        ),
-                      ),
-                      SizedBox(width: size.height * 0.01),
-                      Container(
-                        width: size.width * 0.65,
+                        width: size.width,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              children: [
-                                Text(
-                                  "61",
-                                  style: headlineTextStyle,
-                                ),
-                                SizedBox(height: (size.height - 10) * 0.01),
-                                Text(
-                                  "Posts",
-                                  style: subtitleTextStyle,
-                                ),
-                              ],
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(width: 1, color: bgGrey),
+                                image: DecorationImage(
+                                  image: NetworkImage(user.data.profilePicURL),
+                                  fit: BoxFit.cover
+                                )
+                              ),
                             ),
-                            Column(
-                              children: [
-                                Text(
-                                  "1,058",
-                                  style: headlineTextStyle
-                                ),
-                                SizedBox(height: (size.height - 10) * 0.01),
-                                Text(
-                                  "Followers",
-                                  style: subtitleTextStyle,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  "173",
-                                  style: headlineTextStyle
-                                ),
-                                SizedBox(height: (size.height - 10) * 0.01),
-                                Text(
-                                  "Following",
-                                  style: subtitleTextStyle,
-                                ),
-                              ],
+                            SizedBox(width: size.height * 0.01),
+                            Container(
+                              width: size.width * 0.65,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        widget.userData['media_count'].toString(),
+                                        style: headlineTextStyle,
+                                      ),
+                                      SizedBox(height: (size.height - 10) * 0.01),
+                                      Text(
+                                        "Posts",
+                                        style: subtitleTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        user.data.followers,
+                                        style: headlineTextStyle
+                                      ),
+                                      SizedBox(height: (size.height - 10) * 0.01),
+                                      Text(
+                                        "Followers",
+                                        style: subtitleTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        user.data.following,
+                                        style: headlineTextStyle
+                                      ),
+                                      SizedBox(height: (size.height - 10) * 0.01),
+                                      Text(
+                                        "Following",
+                                        style: subtitleTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      Text(user.data.username, style: subtitleBoldTextStyle),
+                      SizedBox(height: 10),
+                      Text(user.data.bio, style: subtitleTextStyle),   
+                      user.data.externalURL != null
+                        ? Linkify(text: user.data.externalURL ?? "", style: subtitleTextStyle)
+                        : SizedBox()
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 3),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: (size.width * 0.5),
+                        child: IconButton(
+                          splashRadius: 20,
+                          icon: Icon(FontAwesome.th, color: selectedIndex == 0 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
+                          onPressed: () {
+                            setState(() {
+                              selectedIndex = 0;
+                            });
+                          },
+                        ),
+                      ),
+                      Container(
+                        width: (size.width * 0.5),
+                        child: IconButton(
+                          splashRadius: 20,
+                          icon: Icon(FontAwesome.id_badge, color: selectedIndex == 1 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
+                          onPressed: () {
+                            setState(() {
+                              selectedIndex = 1;
+                            });
+                          },
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: size.height * 0.02),
-                Text(instagramName, style: subtitleBoldTextStyle),
-                SizedBox(height: 10),
-                Text(instagramBio, style: subtitleTextStyle),    
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 3),
-            child: Row(
-              children: [
-                Container(
-                  width: (size.width * 0.5),
-                  child: IconButton(
-                    splashRadius: 20,
-                    icon: Icon(FontAwesome.th, color: selectedIndex == 0 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
-                    onPressed: () {
-                      setState(() {
-                        selectedIndex = 0;
-                      });
-                    },
-                  ),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: 1,
+                          width: (size.width * 0.5),
+                          decoration: BoxDecoration(color: selectedIndex == 0 ? bgDark : Colors.transparent),
+                        ),
+                        Container(
+                          height: 1,
+                          width: (size.width * 0.5),
+                          decoration: BoxDecoration(color: selectedIndex == 1 ? bgDark : Colors.transparent),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 0.5,
+                      width: size.width,
+                      decoration: BoxDecoration(color: bgGrey.withOpacity(0.8)),
+                    ),
+                  ],
                 ),
-                Container(
-                  width: (size.width * 0.5),
-                  child: IconButton(
-                    splashRadius: 20,
-                    icon: Icon(FontAwesome.id_badge, color: selectedIndex == 1 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
-                    onPressed: () {
-                      setState(() {
-                        selectedIndex = 1;
-                      });
-                    },
-                  ),
+                SizedBox(height: 3),
+                IndexedStack(
+                  index: selectedIndex,
+                  children: [
+                    getImages(size),
+                    getImageWithTags(size),
+                  ],
                 ),
               ],
-            ),
-          ),
-          Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 1,
-                    width: (size.width * 0.5),
-                    decoration: BoxDecoration(color: selectedIndex == 0 ? bgDark : Colors.transparent),
-                  ),
-                  Container(
-                    height: 1,
-                    width: (size.width * 0.5),
-                    decoration: BoxDecoration(color: selectedIndex == 1 ? bgDark : Colors.transparent),
-                  ),
-                ],
-              ),
-              Container(
-                height: 0.5,
-                width: size.width,
-                decoration: BoxDecoration(color: bgGrey.withOpacity(0.8)),
-              ),
-            ],
-          ),
-          SizedBox(height: 3),
-          IndexedStack(
-            index: selectedIndex,
-            children: [
-              getImages(size),
-              getImageWithTags(size),
-            ],
-          ),
-        ],
+            )
+          : Center(child: CircularProgressIndicator(color: HexColor("0195F7")));
+        }
       ),
     );
   }
 
   Widget getImages(size) {
-    return Wrap(
-      direction: Axis.horizontal,
-      spacing: 3,
-      runSpacing: 3,
-      children: List.generate(images.length, (index) {
-        return GestureDetector(
-          onTap: (){
-            Get.to(() => PostPage(
-              index: index,
-              images: images
-            ), transition: Transition.cupertino);
+    return Consumer(
+      builder: (context, watch, _){
+        return watch(mediaProvider(widget.userToken)).when(
+          data: (mediaList){
+            return  Wrap(
+              direction: Axis.horizontal,
+              spacing: 3,
+              runSpacing: 3,
+              children: List.generate(mediaList.length, (index) {
+                return GestureDetector(
+                  onTap: (){
+                    Get.to(() => PostPage(
+                      index: index,
+                      medias: mediaList,
+                    ), transition: Transition.cupertino);
+                  },
+                  child: Container(
+                    height: (size.width - 6) / 3,
+                    width: (size.width - 6) / 3,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(mediaList[index].mediaURL),
+                        fit: BoxFit.cover
+                      )
+                    ),
+                  ),
+                );
+              })
+            );
           },
-          child: Container(
-            height: (size.width - 6) / 3,
-            width: (size.width - 6) / 3,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(images[index]),
-                fit: BoxFit.cover
-              )
-            ),
-          ),
+          loading: () => SizedBox(),
+          error: (error, _) => SizedBox()
         );
-      })
+      }
     );
   }
 
