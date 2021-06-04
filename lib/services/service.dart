@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:selth/models/model.dart';
+import 'package:selth/util/constant.dart';
 import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 
 part 'media_services.dart';

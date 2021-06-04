@@ -119,7 +119,7 @@ class _AccountPageState extends State<AccountPage> {
                               Get.offAndToNamed('/auth');
                             },
                             horizontalTitleGap: 0,
-                            leading: Icon(Icons.logout_rounded),
+                            leading: Icon(Icons.logout_rounded, color: Theme.of(context).accentColor),
                             title: Theme.of(context).accentColor == HexColor("000000")
                               ? Text(
                                   "Log out",
@@ -185,171 +185,174 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
       appBar: getAppBar(size),
-      body: FutureBuilder<InstaProfileData>(
-        future: insta.getProfileData(widget.userData['username']),
-        builder: (context, user){
-          return user.hasData
-          ? ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                Container(height: 0.5, color: Theme.of(context).accentColor.withOpacity(0.25)),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: size.height * 0.02,
-                    vertical: size.height * 0.025,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(width: 1, color: bgGrey),
-                                image: DecorationImage(
-                                  image: NetworkImage(user.data.profilePicURL),
-                                  fit: BoxFit.cover
-                                )
-                              ),
-                            ),
-                            SizedBox(width: size.height * 0.01),
-                            Container(
-                              width: size.width * 0.65,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        widget.userData['media_count'].toString(),
-                                        style: headlineTextStyle,
-                                      ),
-                                      SizedBox(height: (size.height - 10) * 0.01),
-                                      Text(
-                                        "Posts",
-                                        style: subtitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        user.data.followers,
-                                        style: headlineTextStyle
-                                      ),
-                                      SizedBox(height: (size.height - 10) * 0.01),
-                                      Text(
-                                        "Followers",
-                                        style: subtitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        user.data.following,
-                                        style: headlineTextStyle
-                                      ),
-                                      SizedBox(height: (size.height - 10) * 0.01),
-                                      Text(
-                                        "Following",
-                                        style: subtitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.02),
-                      Text(user.data.username, style: subtitleBoldTextStyle),
-                      SizedBox(height: 10),
-                      Text(user.data.bio, style: subtitleTextStyle),   
-                      user.data.externalURL != null
-                        ? Linkify(text: user.data.externalURL ?? "", style: subtitleTextStyle)
-                        : SizedBox()
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: (size.width * 0.5),
-                        child: IconButton(
-                          splashRadius: 20,
-                          icon: Icon(FontAwesome.th, color: selectedIndex == 0 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
-                          onPressed: () {
-                            setState(() {
-                              selectedIndex = 0;
-                            });
-                          },
-                        ),
-                      ),
-                      Container(
-                        width: (size.width * 0.5),
-                        child: IconButton(
-                          splashRadius: 20,
-                          icon: Icon(FontAwesome.id_badge, color: selectedIndex == 1 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
-                          onPressed: () {
-                            setState(() {
-                              selectedIndex = 1;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    Row(
+      body: Consumer(
+        builder: (context, watch, _){
+          return watch(userProfileProvider(widget.userData['username'])).when(
+            data: (userData){
+              return ListView(
+                physics: BouncingScrollPhysics(),
+                children: [
+                  Container(height: 0.5, color: Theme.of(context).accentColor.withOpacity(0.25)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size.height * 0.02,
+                      vertical: size.height * 0.025,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          height: 1,
+                          width: size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(width: 1, color: bgGrey),
+                                  image: DecorationImage(
+                                    image: NetworkImage(userData.profilePicURL),
+                                    fit: BoxFit.cover
+                                  )
+                                ),
+                              ),
+                              SizedBox(width: size.height * 0.01),
+                              Container(
+                                width: size.width * 0.65,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text(
+                                          widget.userData['media_count'].toString(),
+                                          style: headlineTextStyle,
+                                        ),
+                                        SizedBox(height: (size.height - 10) * 0.01),
+                                        Text(
+                                          "Posts",
+                                          style: subtitleTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          userData.followers,
+                                          style: headlineTextStyle
+                                        ),
+                                        SizedBox(height: (size.height - 10) * 0.01),
+                                        Text(
+                                          "Followers",
+                                          style: subtitleTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          userData.following,
+                                          style: headlineTextStyle
+                                        ),
+                                        SizedBox(height: (size.height - 10) * 0.01),
+                                        Text(
+                                          "Following",
+                                          style: subtitleTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: size.height * 0.02),
+                        Text(userData.username, style: subtitleBoldTextStyle),
+                        SizedBox(height: 10),
+                        Text(userData.bio, style: subtitleTextStyle),   
+                        userData.externalURL != null
+                          ? Linkify(text: userData.externalURL ?? "", style: subtitleTextStyle)
+                          : SizedBox()
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Container(
                           width: (size.width * 0.5),
-                          decoration: BoxDecoration(color: selectedIndex == 0 ? bgDark : Colors.transparent),
+                          child: IconButton(
+                            splashRadius: 20,
+                            icon: Icon(FontAwesome.th, color: selectedIndex == 0 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
+                            onPressed: () {
+                              setState(() {
+                                selectedIndex = 0;
+                              });
+                            },
+                          ),
                         ),
                         Container(
-                          height: 1,
                           width: (size.width * 0.5),
-                          decoration: BoxDecoration(color: selectedIndex == 1 ? bgDark : Colors.transparent),
+                          child: IconButton(
+                            splashRadius: 20,
+                            icon: Icon(FontAwesome.id_badge, color: selectedIndex == 1 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
+                            onPressed: () {
+                              setState(() {
+                                selectedIndex = 1;
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
-                    Container(
-                      height: 0.5,
-                      width: size.width,
-                      decoration: BoxDecoration(color: bgGrey.withOpacity(0.8)),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 3),
-                IndexedStack(
-                  index: selectedIndex,
-                  children: [
-                    getImages(size),
-                    getImageWithTags(size),
-                  ],
-                ),
-              ],
-            )
-          : Center(child: CircularProgressIndicator(color: HexColor("0195F7")));
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 1,
+                            width: (size.width * 0.5),
+                            decoration: BoxDecoration(color: selectedIndex == 0 ? bgDark : Colors.transparent),
+                          ),
+                          Container(
+                            height: 1,
+                            width: (size.width * 0.5),
+                            decoration: BoxDecoration(color: selectedIndex == 1 ? bgDark : Colors.transparent),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: size.width,
+                        decoration: BoxDecoration(color: bgGrey.withOpacity(0.8)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 3),
+                  IndexedStack(
+                    index: selectedIndex,
+                    children: [
+                      getImages(size, userData.profilePicURL),
+                      getImageWithTags(size),
+                    ],
+                  ),
+                ],
+              );
+            },
+            loading: () => Center(child: CircularProgressIndicator(color: HexColor("0195F7"))),
+            error: (error, _) => SizedBox()
+          );
         }
-      ),
+      )
     );
   }
 
-  Widget getImages(size) {
+  Widget getImages(size, String profilePictureURL) {
     return Consumer(
       builder: (context, watch, _){
         return watch(mediaProvider(widget.userToken)).when(
@@ -364,6 +367,7 @@ class _AccountPageState extends State<AccountPage> {
                     Get.to(() => PostPage(
                       index: index,
                       medias: mediaList,
+                      photoURL: profilePictureURL
                     ), transition: Transition.cupertino);
                   },
                   child: Container(

@@ -16,4 +16,14 @@ class MediaModel{
     this.thumbnail = thumbnail ?? "";
     this.timeStamp = timeStamp ?? "";
   }
+
+  Future<bool> setUserMediasJSON(String value) async {
+    var _sharedPreferences = await SharedPreferences.getInstance();
+    return _sharedPreferences.setString('userMedias', value);
+  }
+
+  Future<String> getUserMediasJSON() async {
+    var _sharedPreferences = await SharedPreferences.getInstance();
+    return _sharedPreferences.getString('userMedias');
+  }
 }

@@ -17,6 +17,11 @@ class UserDataSharedUtility {
     return _sharedPreferences.setString('userToken', value);
   }
 
+  Future<bool> setUserTokenExpiration(String value) async {
+    var _sharedPreferences = await SharedPreferences.getInstance();
+    return _sharedPreferences.setString('userTokenExpiration', value);
+  }
+
   Future<String> getUserDataJSON() async {
     return sharedPreferences.getString('userData');
   }
@@ -24,5 +29,10 @@ class UserDataSharedUtility {
   Future<String> getUserToken(String value) async {
     var _sharedPreferences = await SharedPreferences.getInstance();
     return _sharedPreferences.getString('userToken');
+  }
+
+  Future<String> getUserTokenExpiration(String value) async {
+    var _sharedPreferences = await SharedPreferences.getInstance();
+    return _sharedPreferences.getString('userTokenExpiration');
   }
 }

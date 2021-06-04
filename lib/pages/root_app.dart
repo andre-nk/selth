@@ -10,14 +10,13 @@ class _RootAppState extends State<RootApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<SharedPreferences>(
-        future: SharedPreferences.getInstance(),
-        builder: (context, snapshot){
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot){
 
-          print(snapshot.data.getString('userToken'));
-
-          return IndexedStack(
+        print(snapshot.data.getString('userToken'));
+        return Scaffold(
+          body: IndexedStack(
             index: indexPage,
             children: [
               AccountPage(
@@ -25,34 +24,29 @@ class _RootAppState extends State<RootApp> {
                 userToken: snapshot.data.getString('userToken'),
               ),
             ],
-          );
-        },
-      ),
-      bottomNavigationBar: getBottomNavigationBar(),
-    );
-  }
-
-  Widget getBottomNavigationBar() {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(width: 1, color: bgDark.withOpacity(0.3))),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 0),
-        child: IconButton(
-          onPressed: () async {
-            var sharedPref = await SharedPreferences.getInstance();
-            sharedPref.remove('');
-          },
-          icon: SvgPicture.asset(
-            icons.last["inactive"],
-            color: Theme.of(context).accentColor, 
-            width: 25, 
-            height: 25,
           ),
-        )
-      )
+          bottomNavigationBar: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(width: 1, color: bgDark.withOpacity(0.3))),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0),
+              child: IconButton(
+                onPressed: () async {
+                  print(snapshot.data.getString('userTokenExpiration'));
+                },
+                icon: SvgPicture.asset(
+                  icons.last["inactive"],
+                  color: Theme.of(context).accentColor, 
+                  width: 25, 
+                  height: 25,
+                ),
+              )
+            )
+          ),
+        );
+      }
     );
   }
 }

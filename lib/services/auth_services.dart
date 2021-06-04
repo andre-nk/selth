@@ -12,20 +12,26 @@ class AuthServices{
       (simpleAuth.Account _user) async {
         simpleAuth.OAuthAccount user = _user;
 
-        var igUserResponse =
-            await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
-          '/me',
+        var refreshResponse = await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
+          '/access_token',
           queryParameters: {
-            // Get the fields you need.
-            // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
-            "fields": "username,id,account_type,media_count,media",
+            "grant_type": "ig_exchange_token",
+            "client_secret": Constants.igClientSecret,
             "access_token": user.token,
           },
         );
 
-        _userData = igUserResponse.data;
-        userModel.setUserDataJSON(json.encode(_userData));
-        userModel.setUserToken(user.token);
+        var igUserResponse = await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
+          '/me',
+          queryParameters: {
+            "fields": "username,id,account_type,media_count,media",
+            "access_token": refreshResponse.data['access_token'],
+          },
+        );
+
+        userModel.setUserDataJSON(json.encode(igUserResponse.data));
+        userModel.setUserToken(refreshResponse.data['access_token']);
+        userModel.setUserTokenExpiration(refreshResponse.data['expires_in'].toString());
 
         Get.offAndToNamed('/homepage');
       },
