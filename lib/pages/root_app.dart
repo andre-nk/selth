@@ -7,6 +7,13 @@ class RootApp extends StatefulWidget {
 
 class _RootAppState extends State<RootApp> {
   int indexPage = 0;
+  var spreferences;
+
+  @override
+  void initState(){ 
+    super.initState();
+    spreferences = SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +21,11 @@ class _RootAppState extends State<RootApp> {
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot){
 
-        print(snapshot.data.getString('userToken'));
+        if(snapshot.data.getString('userTokenExpiration') == '0'){
+          spreferences.remove('userData');
+          Get.offAndToNamed('/auth');
+        }
+
         return Scaffold(
           body: IndexedStack(
             index: indexPage,
@@ -34,7 +45,7 @@ class _RootAppState extends State<RootApp> {
               padding: const EdgeInsets.only(top: 0),
               child: IconButton(
                 onPressed: () async {
-                  print(snapshot.data.getString('userTokenExpiration'));
+
                 },
                 icon: SvgPicture.asset(
                   icons.last["inactive"],

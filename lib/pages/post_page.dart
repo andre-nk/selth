@@ -16,18 +16,25 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
 
   ScrollController scrollController = ScrollController();
+  FlickMultiManager flickMultiManager;
+
+  @override
+  void initState() { 
+    super.initState();
+    flickMultiManager = FlickMultiManager();
+  }
 
   @override
   Widget build(BuildContext context) {
 
     Size size = MediaQuery.of(context).size;  
-    // TextStyle headlineTextStyle = Theme.of(context).textTheme.headline6;
-    // TextStyle subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
+    TextStyle subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
     TextStyle subtitleBoldTextStyle = Theme.of(context).textTheme.subtitle2;
+    DateFormat _dateFormat = DateFormat('MMMM dd, yyyy');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(
-        widget.index * (size.width + size.height * 0.1),
+        widget.index * (size.width + size.height * 0.15),
       );
     });
 
@@ -46,54 +53,130 @@ class _PostPageState extends State<PostPage> {
           style: TextStyle(color: Theme.of(context).accentColor, fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Container(
-        height: size.height,
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          controller: scrollController,
-          itemCount: widget.medias.length,
-          itemBuilder: (context, index){
-            return Container(
-              height: size.width + size.height * 0.1,
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(
-                      size.height * 0.015
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(width: 1, color: bgGrey),
-                            image: DecorationImage(
-                              image: NetworkImage(widget.photoURL),
-                              fit: BoxFit.cover
-                            )
+      body: VisibilityDetector(
+        key: ObjectKey(flickMultiManager),
+        onVisibilityChanged: (visibility) {
+          if (visibility.visibleFraction == 0 && this.mounted) {
+            flickMultiManager.pause();
+          }
+        },
+        child: Container(
+          height: size.height,
+          child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            controller: scrollController,
+            itemCount: widget.medias.length,
+            itemBuilder: (context, index){
+              return Container(
+                height: size.width + size.height * 0.2,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(
+                        size.height * 0.015
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: NetworkImage(widget.photoURL),
+                                fit: BoxFit.cover
+                              )
+                            ),
                           ),
-                        ),
-                        SizedBox(width: size.width * 0.025),
-                        Text(username, style: subtitleBoldTextStyle),
-                      ],
+                          SizedBox(width: size.width * 0.025),
+                          Text(username, style: subtitleBoldTextStyle),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    height: size.width,
-                    width: size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(widget.medias[index].mediaURL),
-                        fit: BoxFit.cover
-                      )
+                    Container(
+                      height: size.width,
+                      width: size.width,
+                      child: widget.medias[index].mediaType == "IMAGE"
+                        ? Image(
+                            image: NetworkImage(widget.medias[index].mediaURL),
+                            fit: BoxFit.cover
+                          )
+                        : widget.medias[index].mediaType == "VIDEO"
+                          ? FlickMultiPlayer(
+                              url: widget.medias[index].mediaURL,
+                              flickMultiManager: flickMultiManager,
+                              image: widget.medias[index].thumbnail,
+                            )
+                          : FutureBuilder(
+                              future: MediaModel().getUserCarouselChildrenJSON(widget.medias[index].id),
+                              builder: (context, response){
+                                Map carouselChildren = jsonDecode(response.data);
+                                List<MediaModel> carouselChildrenList = [];
+
+                                carouselChildren.forEach((key, value) {
+                                  carouselChildrenList.add(MediaModel(
+                                    mediaType: value['media_type'],
+                                    thumbnail: value['thumbnail_url'] ?? "",
+                                    mediaURL: value['media_url']
+                                  ));
+                                });
+
+                                print(carouselChildrenList);
+
+                                return PageView(
+                                  pageSnapping: true,
+                                  children: List.generate(carouselChildrenList.length, (index){
+                                    return carouselChildrenList[index].mediaType == "IMAGE"
+                                    ? Image(
+                                        image: NetworkImage(carouselChildrenList[index].mediaURL),
+                                        fit: BoxFit.cover
+                                      )
+                                    : FlickMultiPlayer(
+                                        url: carouselChildrenList[index].mediaURL,
+                                        flickMultiManager: flickMultiManager,
+                                        image: carouselChildrenList[index].thumbnail,
+                                    );
+                                  }),
+                                );
+                              }
+                            )
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.symmetric(
+                        vertical: size.height * 0.025,
+                        horizontal: size.height * 0.015
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "",
+                              style: subtitleTextStyle,
+                              children: <TextSpan>[
+                                TextSpan(text: username + " ", style: subtitleBoldTextStyle),
+                                TextSpan(text: widget.medias[index].caption),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                          Text(
+                            _dateFormat.format(DateTime.parse(widget.medias[index].timeStamp)),
+                            style: TextStyle(
+                              color: Theme.of(context).accentColor.withOpacity(0.75),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       )
     );

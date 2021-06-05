@@ -26,4 +26,14 @@ class MediaModel{
     var _sharedPreferences = await SharedPreferences.getInstance();
     return _sharedPreferences.getString('userMedias');
   }
+
+  Future<bool> setUserCarouselChildrenJSON(String id, String value) async {
+    var _sharedPreferences = await SharedPreferences.getInstance();
+    return _sharedPreferences.setString(id, value);
+  }
+
+  Future<String> getUserCarouselChildrenJSON(String id) async {
+    var _sharedPreferences = await SharedPreferences.getInstance();
+    return _sharedPreferences.getString(id);
+  }
 }
