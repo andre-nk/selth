@@ -31,10 +31,11 @@ class _PostPageState extends State<PostPage> {
     TextStyle subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
     TextStyle subtitleBoldTextStyle = Theme.of(context).textTheme.subtitle2;
     DateFormat _dateFormat = DateFormat('MMMM dd, yyyy');
+    DateFormat _sameYearDateFormat = DateFormat('MMMM dd');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(
-        widget.index * (size.width + size.height * 0.15),
+        widget.index * (size.width + size.height * 0.2),
       );
     });
 
@@ -110,33 +111,98 @@ class _PostPageState extends State<PostPage> {
                           : FutureBuilder(
                               future: MediaModel().getUserCarouselChildrenJSON(widget.medias[index].id),
                               builder: (context, response){
-                                Map carouselChildren = jsonDecode(response.data);
+                                List carouselChildren = jsonDecode(response.data)['data'];
                                 List<MediaModel> carouselChildrenList = [];
 
-                                carouselChildren.forEach((key, value) {
+                                carouselChildren.forEach((media) {
                                   carouselChildrenList.add(MediaModel(
-                                    mediaType: value['media_type'],
-                                    thumbnail: value['thumbnail_url'] ?? "",
-                                    mediaURL: value['media_url']
+                                    mediaType: media['media_type'],
+                                    thumbnail: media['thumbnail_url'] ?? "",
+                                    mediaURL: media['media_url']
                                   ));
                                 });
 
-                                print(carouselChildrenList);
-
-                                return PageView(
-                                  pageSnapping: true,
-                                  children: List.generate(carouselChildrenList.length, (index){
-                                    return carouselChildrenList[index].mediaType == "IMAGE"
-                                    ? Image(
-                                        image: NetworkImage(carouselChildrenList[index].mediaURL),
-                                        fit: BoxFit.cover
-                                      )
-                                    : FlickMultiPlayer(
-                                        url: carouselChildrenList[index].mediaURL,
-                                        flickMultiManager: flickMultiManager,
-                                        image: carouselChildrenList[index].thumbnail,
-                                    );
-                                  }),
+                                return Column(
+                                  children: [
+                                    Container(
+                                      height: size.width,
+                                      width: size.width,
+                                      child: PageView(
+                                        physics: PageScrollPhysics(),
+                                        pageSnapping: true,
+                                        children: List.generate(carouselChildrenList.length, (index){
+                                          return carouselChildrenList[index].mediaType == "IMAGE"
+                                          ? Stack(
+                                              alignment: Alignment.topRight,
+                                              children: [
+                                                Image(
+                                                  image: NetworkImage(carouselChildrenList[index].mediaURL),
+                                                  fit: BoxFit.cover
+                                                ),
+                                                Container(
+                                                  height: (size.width) / 12.5,
+                                                  width: (size.width) / 8,
+                                                  margin: EdgeInsets.only(
+                                                    right: (size.width / 24),
+                                                    top: (size.width / 24),
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.all(
+                                                      Radius.circular(50)
+                                                    ),
+                                                    color: Colors.black.withOpacity(0.8),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      "${index + 1}/${carouselChildrenList.length}",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.normal
+                                                      )
+                                                    ),
+                                                  ),
+                                                ),
+                                              ]
+                                            )
+                                          : Container(
+                                            child: Stack(
+                                              alignment: Alignment.topRight,
+                                              children: [
+                                                FlickMultiPlayer(
+                                                    url: carouselChildrenList[index].mediaURL,
+                                                    flickMultiManager: flickMultiManager,
+                                                    image: carouselChildrenList[index].thumbnail,
+                                                ),
+                                                Container(
+                                                  height: (size.width) / 12.5,
+                                                  width: (size.width) / 8,
+                                                  margin: EdgeInsets.only(
+                                                    right: (size.width / 24),
+                                                    top: (size.width / 24),
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.all(
+                                                      Radius.circular(50)
+                                                    ),
+                                                    color: Colors.black.withOpacity(0.8),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      "${index + 1}/${carouselChildrenList.length}",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.normal
+                                                      )
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  ],
                                 );
                               }
                             )
@@ -144,7 +210,7 @@ class _PostPageState extends State<PostPage> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.symmetric(
-                        vertical: size.height * 0.025,
+                        vertical: size.height * 0.0175,
                         horizontal: size.height * 0.015
                       ),
                       child: Column(
@@ -162,7 +228,9 @@ class _PostPageState extends State<PostPage> {
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                           Text(
-                            _dateFormat.format(DateTime.parse(widget.medias[index].timeStamp)),
+                            DateTime.parse(widget.medias[index].timeStamp).year == DateTime.now().year
+                            ? _sameYearDateFormat.format(DateTime.parse(widget.medias[index].timeStamp))
+                            : _dateFormat.format(DateTime.parse(widget.medias[index].timeStamp)),
                             style: TextStyle(
                               color: Theme.of(context).accentColor.withOpacity(0.75),
                               fontSize: 13,

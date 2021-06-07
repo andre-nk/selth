@@ -118,13 +118,6 @@ packages:
       url: "https://pub.dev/"
     source: hosted
     version: "2.0.0"
-  flutter_icons:
-    dependency: "direct main"
-    description:
-      name: flutter_icons
-      url: "https://pub.dev/"
-    source: hosted
-    version: "1.1.0"
   flutter_launcher_icons:
     dependency: "direct main"
     description:
@@ -331,6 +324,13 @@ packages:
       url: "https://pub.dev/"
     source: hosted
     version: "4.1.0"
+  photo_manager:
+    dependency: "direct main"
+    description:
+      name: photo_manager
+      url: "https://pub.dev/"
+    source: hosted
+    version: "1.2.2"
   platform:
     dependency: transitive
     description:
@@ -476,13 +476,6 @@ packages:
       url: "https://pub.dev/"
     source: hosted
     version: "0.3.0"
-  time:
-    dependency: "direct main"
-    description:
-      name: time
-      url: "https://pub.dev/"
-    source: hosted
-    version: "2.0.0"
   typed_data:
     dependency: transitive
     description:

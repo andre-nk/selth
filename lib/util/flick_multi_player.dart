@@ -43,6 +43,9 @@ class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(widget.image is String);
+
     return VisibilityDetector(
       key: ObjectKey(flickManager),
       onVisibilityChanged: (visiblityInfo) {
@@ -57,12 +60,14 @@ class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
             playerLoadingFallback: Positioned.fill(
               child: Stack(
                 children: <Widget>[
-                  Positioned.fill(
-                    child: Image.network(
-                      widget.image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  widget.image != "" ? 
+                    Positioned.fill(
+                      child: Image.network(
+                        widget.image,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : SizedBox(),
                   Positioned(
                     right: 20,
                     top: 20,

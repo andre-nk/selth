@@ -234,9 +234,9 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 SizedBox(width: size.height * 0.01),
                                 Container(
-                                  width: size.width * 0.65,
+                                  width: size.width * 0.6,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         children: [
@@ -295,131 +295,71 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: (size.width * 0.5),
-                            child: IconButton(
-                              splashRadius: 20,
-                              icon: Icon(FontAwesome.th, color: selectedIndex == 0 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
-                              onPressed: () {
-                                setState(() {
-                                  selectedIndex = 0;
-                                });
-                              },
-                            ),
-                          ),
-                          Container(
-                            width: (size.width * 0.5),
-                            child: IconButton(
-                              splashRadius: 20,
-                              icon: Icon(FontAwesome.id_badge, color: selectedIndex == 1 ? Theme.of(context).accentColor : Theme.of(context).accentColor.withOpacity(0.5),),
-                              onPressed: () {
-                                setState(() {
-                                  selectedIndex = 1;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 1,
-                              width: (size.width * 0.5),
-                              decoration: BoxDecoration(color: selectedIndex == 0 ? bgDark : Colors.transparent),
-                            ),
-                            Container(
-                              height: 1,
-                              width: (size.width * 0.5),
-                              decoration: BoxDecoration(color: selectedIndex == 1 ? bgDark : Colors.transparent),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 0.5,
-                          width: size.width,
-                          decoration: BoxDecoration(color: bgGrey.withOpacity(0.8)),
-                        ),
-                      ],
-                    ),
                     SizedBox(height: 3),
-                    IndexedStack(
-                      index: selectedIndex,
-                      children: [
-                        Consumer(
-                          builder: (context, watch, _){
-                            return watch(mediaProvider(widget.userToken)).when(
-                              data: (mediaList){
-                                return  Wrap(
-                                  direction: Axis.horizontal,
-                                  spacing: 3,
-                                  runSpacing: 3,
-                                  children: List.generate(mediaList.length, (index) {
-                                    return GestureDetector(
-                                      onTap: (){
-                                        Get.to(() => PostPage(
-                                          index: index,
-                                          medias: mediaList,
-                                          photoURL: userData.profilePicURL
-                                        ), transition: Transition.cupertino);
-                                      },
-                                      child: Container(
-                                        height: (size.width - 6) / 3,
-                                        width: (size.width - 6) / 3,
-                                        child: mediaList[index].mediaType == "IMAGE"
-                                          ? Image(
-                                              image: NetworkImage(mediaList[index].mediaURL),
-                                              fit: BoxFit.cover
-                                            )
-                                          : mediaList[index].mediaType == "VIDEO"
-                                            ? Stack(
-                                                alignment: Alignment.topRight,
-                                                children: [
-                                                  Image(
-                                                    image: NetworkImage(mediaList[index].thumbnail),
-                                                    fit: BoxFit.cover
-                                                  ),
-                                                  Icon(Icons.play_arrow_rounded, color: Colors.white, size: 32),
-                                                ]
+                    Consumer(
+                      builder: (context, watch, _){
+                        return watch(mediaProvider(widget.userToken)).when(
+                          data: (mediaList){
+                            return  Wrap(
+                              direction: Axis.horizontal,
+                              spacing: 3,
+                              runSpacing: 3,
+                              children: List.generate(mediaList.length, (index) {
+                                return GestureDetector(
+                                  onTap: (){
+                                    Get.to(() => PostPage(
+                                      index: index,
+                                      medias: mediaList,
+                                      photoURL: userData.profilePicURL
+                                    ), transition: Transition.cupertino);
+                                  },
+                                  child: Container(
+                                    height: (size.width - 6) / 3,
+                                    width: (size.width - 6) / 3,
+                                    child: mediaList[index].mediaType == "IMAGE"
+                                      ? Image(
+                                          image: NetworkImage(mediaList[index].mediaURL),
+                                          fit: BoxFit.cover
+                                        )
+                                      : mediaList[index].mediaType == "VIDEO"
+                                        ? Stack(
+                                            alignment: Alignment.topRight,
+                                            children: [
+                                              Image(
+                                                image: NetworkImage(mediaList[index].thumbnail),
+                                                fit: BoxFit.cover
+                                              ),
+                                              Icon(Icons.play_arrow_rounded, color: Colors.white, size: 32),
+                                            ]
+                                          )
+                                        : Stack(
+                                            alignment: Alignment.topRight,
+                                            children: [
+                                              Image(
+                                                image: NetworkImage(mediaList[index].mediaURL),
+                                                fit: BoxFit.cover
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: (size.width / 24) - 10,
+                                                  top: (size.width / 24) - 10,
+                                                ),
+                                                child: SvgPicture.asset(
+                                                  'assets/images/carousel.svg',
+                                                  height: 20, color: Colors.white  
+                                                ),
                                               )
-                                            : Stack(
-                                                alignment: Alignment.topRight,
-                                                children: [
-                                                  Image(
-                                                    image: NetworkImage(mediaList[index].mediaURL),
-                                                    fit: BoxFit.cover
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                      right: (size.width / 24) - 10,
-                                                      top: (size.width / 24) - 10,
-                                                    ),
-                                                    child: SvgPicture.asset(
-                                                      'assets/images/carousel.svg',
-                                                      height: 20, color: Colors.white  
-                                                    ),
-                                                  )
-                                                ]
-                                              )
-                                      ),
-                                    );
-                                  })
+                                            ]
+                                          )
+                                  ),
                                 );
-                              },
-                              loading: () => SizedBox(),
-                              error: (error, _) => SizedBox()
+                              })
                             );
-                          }
-                        ),
-                        getImageWithTags(size),
-                      ],
+                          },
+                          loading: () => SizedBox(),
+                          error: (error, _) => SizedBox()
+                        );
+                      }
                     ),
                   ],
                 ),

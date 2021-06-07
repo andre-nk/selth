@@ -45,7 +45,7 @@ class _RootAppState extends State<RootApp> {
               padding: const EdgeInsets.only(top: 0),
               child: IconButton(
                 onPressed: () async {
-
+                  Get.to(() => AddItemPage(), transition: Transition.downToUp);
                 },
                 icon: SvgPicture.asset(
                   icons.last["inactive"],
