@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
@@ -29,4 +30,5 @@ part 'new_post_page.dart';
 part 'root_app.dart';
 part 'post_page.dart';
 part 'auth_page.dart';
-part 'add_item_page.dart';
+part 'add_post_page.dart';
+part 'camera_page.dart';

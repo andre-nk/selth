@@ -45,7 +45,9 @@ class _RootAppState extends State<RootApp> {
               padding: const EdgeInsets.only(top: 0),
               child: IconButton(
                 onPressed: () async {
-                  Get.to(() => AddItemPage(), transition: Transition.downToUp);
+                  Get.bottomSheet(
+                    getBottomSheet(context, MediaQuery.of(context).size)
+                  );
                 },
                 icon: SvgPicture.asset(
                   icons.last["inactive"],
@@ -58,6 +60,63 @@ class _RootAppState extends State<RootApp> {
           ),
         );
       }
+    );
+  }
+
+  Widget getBottomSheet(BuildContext context, Size size){
+    return BottomSheet(
+      enableDrag: true,
+      backgroundColor: HexColor("262626"),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20)
+        )
+      ),
+      builder: (context){
+        return Container(
+          height: size.height * 0.2,
+          padding: EdgeInsets.all(
+            size.height * 0.02
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: size.width * 0.125,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: HexColor("747474"),
+                  borderRadius: BorderRadius.all(Radius.circular(50))
+                ),
+              ),
+              ListTile(
+                minLeadingWidth: 30,
+                contentPadding: EdgeInsets.only(
+                  top: size.height * 0.01,
+                  bottom: size.height * 0,
+                ),
+                title: Text("New post"),    
+                onTap: (){
+                  Navigator.pop(context);
+                  Get.to(() => AddItemPage(), transition: Transition.downToUp);
+                },       
+              ),
+              ListTile(
+                minLeadingWidth: 30,
+                contentPadding: EdgeInsets.only(
+                  top: size.height * 0,
+                  bottom: size.height * 0.01,
+                ),
+                title: Text("New story"),           
+              )
+            ],
+          )
+        );
+      },
+      onClosing: (){},
     );
   }
 }
