@@ -10,20 +10,7 @@ class AddItemPage extends StatefulWidget {
 class _AddItemPageState extends State<AddItemPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Post"),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(
-              right: MediaQuery.of(context).size.width * 0.04
-            ),
-            child: Icon(Icons.arrow_forward, color: HexColor("0195F7")),
-          )
-        ],
-      ),
-      body: MediaGrid(),
-    );
+    return MediaGrid();
   }
 }
 
@@ -34,8 +21,9 @@ class MediaGrid extends StatefulWidget {
 
 class _MediaGridState extends State<MediaGrid> {
   List<Widget> _mediaList = [];
+  List<AssetEntity> _rawMediaList = [];
   Widget selectedMedia;
-  List<AssetPathEntity> allPath;
+  AssetEntity selectedEntity;
   AssetPathEntity selectedPath;
   int currentPage = 0;
   int lastPage;
@@ -63,8 +51,10 @@ class _MediaGridState extends State<MediaGrid> {
       List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: false);
       List<AssetEntity> media = await albums[0].getAssetListPaged(currentPage, 60);
       List<Widget> temp = [];
+      List<AssetEntity> rawTemp = [];
 
       for (var asset in media) {
+        rawTemp.add(asset);
         temp.add(
           FutureBuilder(
             future: asset.thumbDataWithSize(1000, 1000),
@@ -98,9 +88,13 @@ class _MediaGridState extends State<MediaGrid> {
       }
 
       setState(() {
-        selectedPath == null 
-        ? _mediaList.addAll(temp)
-        : _mediaList = temp;
+        if(selectedPath == null){
+          _mediaList.addAll(temp);
+          _rawMediaList.addAll(rawTemp);
+        } else {
+          _mediaList = temp;
+          _rawMediaList = rawTemp;
+        } 
         currentPage++;
       });
 
@@ -116,115 +110,130 @@ class _MediaGridState extends State<MediaGrid> {
     double midBar = 55;
 
     return SafeArea(
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification scroll) {
-          _handleScrollEvent(scroll);
-          return;
-        },
-        child: Container(
-          height: size.height,
-          child: Column(
-            children: [
-              Container(
-                height: size.width,
-                width: size.width,
-                child: selectedMedia != null
-                  ? selectedMedia
-                  : _mediaList.isEmpty
-                    ? SizedBox()
-                    : _mediaList.first
-              ),
-              Container(
-                width: size.width,
-                height: midBar,
-                padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.025,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Recent",
-                      style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontSize: 16,
-                      )
-                    ),
-                    InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                      onTap: (){
-                        Get.to(() => CameraPage(
-                          previewImage: _mediaList.first,
-                        ), transition: Transition.leftToRight);
-                      },
-                      child: Container(
-                        height: 32,
-                        width: 32,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.withOpacity(0.5)
-                        ),
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          size: 20,
-                          color: Theme.of(context).accentColor,
-                        ),
-                      ),
-                    )
-                    // DropdownButton<String>(
-                    //   dropdownColor: Theme.of(context).primaryColor,
-                    //   value: dropdownPath == null ? allPath.first.name : dropdownPath,
-                    //   icon: const Icon(CupertinoIcons.chevron_down),
-                    //   iconSize: 20,
-                    //   elevation: 0,
-                    //   style: TextStyle(
-                    //     color: Theme.of(context).accentColor,
-                    //     fontSize: 16,
-                    //   ),
-                    //   underline: Container(
-                    //     height: 0,
-                    //     color: Colors.deepPurpleAccent,
-                    //   ),
-                    //   onChanged: (String newValue) {
-                    //     setState(() {
-                    //       selectedMedia = null;
-                    //       dropdownPath = newValue;
-                    //       selectedPath = allPath.firstWhere((element) => element.name == newValue);
-                    //     });
-                    //     _fetchNewMedia();
-                    //   },
-                    //   items: uniqueDropdownValue.map<DropdownMenuItem<String>>((String value) {
-                    //     return DropdownMenuItem<String>(
-                    //       value: value,
-                    //       child: Text(value),
-                    //     );
-                    //   }).toList(),
-                    // ),
-                  ]
-                )
-              ),
-              Container(
-                height: size.height - size.width - 100 - midBar,
-                width: size.width,
-                child: _mediaList == []
-                  ? SizedBox()
-                  : GridView.builder(
-                  itemCount: _mediaList.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedMedia = _mediaList[index];
-                        });
-                      },
-                      child: _mediaList[index]
-                    );
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Post"),
+          actions: [
+            GestureDetector(
+              onTap: (){ 
+
+                if(selectedEntity == null){
+                  selectedEntity = _rawMediaList.first;
+                }
+
+                if(Platform.isAndroid){
+                  if(selectedEntity.type == AssetType.image){
+                    selectedEntity.loadFile().then((value){
+                      InstagramShare.share(value.path, "image");
+                    });
+                  } else if (selectedEntity.type == AssetType.video){
+                    selectedEntity.loadFile().then((value){
+                      InstagramShare.share(value.path, "video");
+                    });
                   }
+                } else if (Platform.isIOS){
+                  if(selectedEntity.type == AssetType.image){
+                    selectedEntity.loadFile().then((value){
+                      Instashare.shareToFeedInstagram('image/*', value.path.toString());
+                    });
+                  } else if (selectedEntity.type == AssetType.video){
+                    selectedEntity.loadFile().then((value){
+                      Instashare.shareToFeedInstagram('video/*', value.path.toString());
+                    });
+                  }
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.04
                 ),
-              )
-            ],
+                child: Icon(Icons.arrow_forward, color: HexColor("0195F7")),
+              ),
+            )
+          ],
+        ),
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scroll) {
+            _handleScrollEvent(scroll);
+            return;
+          },
+          child: Container(
+            height: size.height,
+            child: Column(
+              children: [
+                Container(
+                  height: size.width,
+                  width: size.width,
+                  child: selectedMedia != null
+                    ? selectedMedia
+                    : _mediaList.isEmpty
+                      ? SizedBox()
+                      : _mediaList.first
+                ),
+                Container(
+                  width: size.width,
+                  height: midBar,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.025,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Recent",
+                        style: TextStyle(
+                          color: Theme.of(context).accentColor,
+                          fontSize: 16,
+                        )
+                      ),
+                      InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                        onTap: (){
+                          Get.to(() => CameraPage(
+                            previewImage: _mediaList.first,
+                          ), transition: Transition.leftToRight);
+                        },
+                        child: Container(
+                          height: 32,
+                          width: 32,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.withOpacity(0.5)
+                          ),
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            size: 20,
+                            color: Theme.of(context).accentColor,
+                          ),
+                        ),
+                      )
+                    ]
+                  )
+                ),
+                Container(
+                  height: size.height - size.width - 100 - midBar,
+                  width: size.width,
+                  child: _mediaList == []
+                    ? SizedBox()
+                    : GridView.builder(
+                    itemCount: _mediaList.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            selectedMedia = _mediaList[index];
+                            selectedEntity = _rawMediaList[index];
+                          });
+                        },
+                        child: _mediaList[index]
+                      );
+                    }
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

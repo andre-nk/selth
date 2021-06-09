@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:instagram_share/instagram_share.dart';
+import 'package:instashare/instashare.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:selth/models/model.dart';
@@ -23,6 +26,7 @@ import 'package:selth/util/account_images_json.dart';
 import 'package:selth/util/bottom_navigation_bar_json.dart';
 import 'package:selth/util/constant.dart';
 import 'package:instagram_public_api/instagram_public_api.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 part 'account_page.dart';
