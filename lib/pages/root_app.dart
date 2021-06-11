@@ -66,7 +66,7 @@ class _RootAppState extends State<RootApp> {
   Widget getBottomSheet(BuildContext context, Size size){
     return BottomSheet(
       enableDrag: true,
-      backgroundColor: HexColor("262626"),
+      backgroundColor: Get.isDarkMode ? HexColor("262626") : Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -88,7 +88,7 @@ class _RootAppState extends State<RootApp> {
                 width: size.width * 0.125,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: HexColor("747474"),
+                  color: Get.isDarkMode ? HexColor("747474") : Colors.grey[400],
                   borderRadius: BorderRadius.all(Radius.circular(50))
                 ),
               ),
@@ -101,7 +101,7 @@ class _RootAppState extends State<RootApp> {
                 title: Text("New post"),    
                 onTap: (){
                   Navigator.pop(context);
-                  Get.to(() => AddItemPage(), transition: Transition.downToUp);
+                  Get.to(() => AddItemPage(false), transition: Transition.downToUp);
                 },       
               ),
               ListTile(
@@ -110,7 +110,11 @@ class _RootAppState extends State<RootApp> {
                   top: size.height * 0,
                   bottom: size.height * 0.01,
                 ),
-                title: Text("New story"),           
+                title: Text("New story"),
+                onTap: (){
+                  Navigator.pop(context);
+                  Get.to(() => CameraPage(true), transition: Transition.downToUp);
+                },   
               )
             ],
           )

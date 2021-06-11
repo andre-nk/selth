@@ -1,25 +1,15 @@
 part of 'pages.dart';
 
 class AddItemPage extends StatefulWidget {
-  AddItemPage({Key key, this.title}) : super(key: key);
-  final String title;
+
+  AddItemPage(this.isStory);
+  final bool isStory;
+
   @override
   _AddItemPageState createState() => _AddItemPageState();
 }
 
 class _AddItemPageState extends State<AddItemPage> {
-  @override
-  Widget build(BuildContext context) {
-    return MediaGrid();
-  }
-}
-
-class MediaGrid extends StatefulWidget {
-  @override
-  _MediaGridState createState() => _MediaGridState();
-}
-
-class _MediaGridState extends State<MediaGrid> {
   List<Widget> _mediaList = [];
   List<AssetEntity> _rawMediaList = [];
   Widget selectedMedia;
@@ -57,7 +47,7 @@ class _MediaGridState extends State<MediaGrid> {
         rawTemp.add(asset);
         temp.add(
           FutureBuilder(
-            future: asset.thumbDataWithSize(1000, 1000),
+            future: asset.thumbDataWithSize(800, 800),
             builder: (BuildContext context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done)
                 return Stack(
@@ -112,7 +102,9 @@ class _MediaGridState extends State<MediaGrid> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Post"),
+          title: widget.isStory
+            ? Text("Story")
+            : Text("Post"),
           actions: [
             GestureDetector(
               onTap: (){ 
@@ -163,7 +155,7 @@ class _MediaGridState extends State<MediaGrid> {
               children: [
                 Container(
                   height: size.width,
-                  width: size.width,
+                  width: widget.isStory ? size.width / 2 : size.width,
                   child: selectedMedia != null
                     ? selectedMedia
                     : _mediaList.isEmpty
@@ -191,7 +183,8 @@ class _MediaGridState extends State<MediaGrid> {
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                         onTap: (){
                           Get.to(() => CameraPage(
-                            previewImage: _mediaList.first,
+                            widget.isStory ? true : false,
+                            previewImage: _rawMediaList.first,
                           ), transition: Transition.leftToRight);
                         },
                         child: Container(
@@ -218,7 +211,10 @@ class _MediaGridState extends State<MediaGrid> {
                     ? SizedBox()
                     : GridView.builder(
                     itemCount: _mediaList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: widget.isStory ? 3 : 4,
+                      childAspectRatio: widget.isStory ? 0.51 : 1.0,
+                    ),
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
                         onTap: (){

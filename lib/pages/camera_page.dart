@@ -3,9 +3,10 @@ part of 'pages.dart';
 enum CameraType {front, back}
 
 class CameraPage extends StatefulWidget {
-  CameraPage({Key key, this.previewImage}) : super(key: key);
+  CameraPage(this.isStory, {Key key, this.previewImage}) : super(key: key);
 
-  final Widget previewImage; 
+  final bool isStory;
+  final AssetEntity previewImage; 
   final double iconHeight = 30;
 
   @override
@@ -121,6 +122,7 @@ class CameraPageState extends State<CameraPage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
+                  
                   Padding(
                     padding: EdgeInsets.only(
                       top:  MediaQuery.of(context).size.height * 0.125
@@ -130,7 +132,9 @@ class CameraPageState extends State<CameraPage> {
                         _controller.setFocusMode(FocusMode.auto);
                       },
                       child: Center(
-                        child: GridView.builder(
+                        child: widget.isStory
+                        ? SizedBox()
+                        : GridView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: MediaQuery.of(context).size.width / 3,
@@ -164,7 +168,9 @@ class CameraPageState extends State<CameraPage> {
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: (){
-                            Get.back();
+                            widget.isStory
+                            ? Get.to(() => AddItemPage(true), transition: Transition.downToUp)
+                            : Get.back();
                           },
                           child: Container(
                             height: 30,
@@ -179,7 +185,25 @@ class CameraPageState extends State<CameraPage> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.all(Radius.circular(5)),
-                              child: widget.previewImage
+                              child: widget.previewImage == null
+                              ? Icon(Icons.photo_outlined, color: Colors.white, size: 18)
+                              : FutureBuilder(
+                                future: widget.previewImage.thumbDataWithSize(800, 800),
+                                builder: (BuildContext context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.done)
+                                    return Stack(
+                                      children: <Widget>[
+                                        Positioned.fill(
+                                          child: Image.memory(
+                                            snapshot.data,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  return Container();
+                                },
+                              ),
                             )
                           ),
                         ),
