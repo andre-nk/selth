@@ -5,9 +5,10 @@ class PostPage extends StatefulWidget {
   final int index;
   final int length;
   final String photoURL;
+  final String username;
   final List<MediaModel> medias;
 
-  const PostPage({Key key, this.index, this.length, this.medias, this.photoURL}) : super(key: key);
+  const PostPage({Key key, this.username, this.index, this.length, this.medias, this.photoURL}) : super(key: key);
 
   @override
   _PostPageState createState() => _PostPageState();
@@ -90,7 +91,7 @@ class _PostPageState extends State<PostPage> {
                             ),
                           ),
                           SizedBox(width: size.width * 0.025),
-                          Text(username, style: subtitleBoldTextStyle),
+                          Text(widget.username, style: subtitleBoldTextStyle),
                         ],
                       ),
                     ),
@@ -221,7 +222,7 @@ class _PostPageState extends State<PostPage> {
                               text: "",
                               style: subtitleTextStyle,
                               children: <TextSpan>[
-                                TextSpan(text: username + " ", style: subtitleBoldTextStyle),
+                                TextSpan(text: widget.username + " ", style: subtitleBoldTextStyle),
                                 TextSpan(text: widget.medias[index].caption),
                               ],
                             ),

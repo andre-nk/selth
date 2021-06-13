@@ -308,6 +308,7 @@ class _AccountPageState extends State<AccountPage> {
                                 return GestureDetector(
                                   onTap: (){
                                     Get.to(() => PostPage(
+                                      username: widget.userData['username'],
                                       index: index,
                                       medias: mediaList,
                                       photoURL: userData.profilePicURL

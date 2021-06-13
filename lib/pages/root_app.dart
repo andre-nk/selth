@@ -66,7 +66,7 @@ class _RootAppState extends State<RootApp> {
   Widget getBottomSheet(BuildContext context, Size size){
     return BottomSheet(
       enableDrag: true,
-      backgroundColor: Get.isDarkMode ? HexColor("262626") : Colors.white,
+      backgroundColor: Theme.of(context).primaryColor == Colors.white ? Colors.white : HexColor("262626"),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -88,7 +88,7 @@ class _RootAppState extends State<RootApp> {
                 width: size.width * 0.125,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: Get.isDarkMode ? HexColor("747474") : Colors.grey[400],
+                  color: Theme.of(context).primaryColor == Colors.white ? Colors.grey[400] : HexColor("747474"),
                   borderRadius: BorderRadius.all(Radius.circular(50))
                 ),
               ),
