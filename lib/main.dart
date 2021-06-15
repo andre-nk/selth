@@ -30,7 +30,7 @@ class MyApp extends ConsumerWidget {
         '/homepage': (context) => RootApp(),
         '/auth': (context) => AuthPage()
       },
-      home: FutureBuilder<String>(
+      home: FutureBuilder<String?>(
         future: context.read(userDataUtilityProvider).getUserDataJSON(),
         builder: (context, snapshot){
           return snapshot.data != null

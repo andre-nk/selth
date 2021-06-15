@@ -3,10 +3,10 @@ part of 'pages.dart';
 enum CameraType {front, back}
 
 class CameraPage extends StatefulWidget {
-  CameraPage(this.isStory, {Key key, this.previewImage}) : super(key: key);
+  CameraPage(this.isStory, {Key? key, this.previewImage}) : super(key: key);
 
   final bool isStory;
-  final AssetEntity previewImage; 
+  final AssetEntity? previewImage; 
   final double iconHeight = 30;
 
   @override
@@ -14,14 +14,14 @@ class CameraPage extends StatefulWidget {
 }
 
 class CameraPageState extends State<CameraPage> {
-  CameraController _controller;
-  CameraType currentType = CameraType.front;
-  Future<void> _controllerInitializer;
-  double cameraHorizontalPosition = 0;
-  bool isRecording = false;
-  int recordingMinute = 0;
-  int recordingSecond = 0;
-  StopWatchTimer stopWatchTimer;
+  late CameraController _controller;
+  late CameraType currentType = CameraType.front;
+  late Future<void> _controllerInitializer;
+  late double cameraHorizontalPosition = 0;
+  late bool isRecording = false;
+  late int recordingMinute = 0;
+  late int recordingSecond = 0;
+  late StopWatchTimer stopWatchTimer;
 
   Future<CameraDescription> getCamera(CameraType type) async {
     final cameras = await availableCameras();
@@ -37,6 +37,7 @@ class CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
     getCamera(CameraType.front).then((camera) {
+      // ignore: unnecessary_null_comparison
       if (camera == null) return;
       setState(() {
         _controller = CameraController(
@@ -185,17 +186,18 @@ class CameraPageState extends State<CameraPage> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.all(Radius.circular(5)),
+                              // ignore: unnecessary_null_comparison
                               child: widget.previewImage == null
                               ? Icon(Icons.photo_outlined, color: Colors.white, size: 18)
                               : FutureBuilder(
-                                future: widget.previewImage.thumbDataWithSize(800, 800),
-                                builder: (BuildContext context, snapshot) {
+                                future: widget.previewImage!.thumbDataWithSize(800, 800),
+                                builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
                                   if (snapshot.connectionState == ConnectionState.done)
                                     return Stack(
                                       children: <Widget>[
                                         Positioned.fill(
                                           child: Image.memory(
-                                            snapshot.data,
+                                            snapshot.data!,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -269,7 +271,7 @@ class CameraPageState extends State<CameraPage> {
                                     ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(Radius.circular(10)),
-                                      color: Colors.grey[900].withOpacity(0.5)
+                                      color: Colors.grey[900]!.withOpacity(0.5)
                                     ),
                                   )
                                 )
@@ -309,6 +311,7 @@ class CameraPageState extends State<CameraPage> {
                                   ? CameraType.back
                                   : CameraType.front
                               ).then((camera) {
+                                // ignore: unnecessary_null_comparison
                                 if (camera == null) return;
                                 setState(() {
                                   currentType == CameraType.front

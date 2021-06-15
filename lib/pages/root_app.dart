@@ -21,7 +21,7 @@ class _RootAppState extends State<RootApp> {
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot){
 
-        if(snapshot.data.getString('userTokenExpiration') == '0'){
+        if(snapshot.data!.getString('userTokenExpiration') == '0'){
           spreferences.remove('userData');
           Get.offAndToNamed('/auth');
         }
@@ -31,8 +31,8 @@ class _RootAppState extends State<RootApp> {
             index: indexPage,
             children: [
               AccountPage(
-                userData: jsonDecode(snapshot.data.getString("userData")),
-                userToken: snapshot.data.getString('userToken'),
+                userData: jsonDecode(snapshot.data!.getString("userData") ?? ""),
+                userToken: snapshot.data!.getString('userToken') ?? "",
               ),
             ],
           ),
@@ -50,7 +50,7 @@ class _RootAppState extends State<RootApp> {
                   );
                 },
                 icon: SvgPicture.asset(
-                  icons.last["inactive"],
+                  icons.last["inactive"] ?? "",
                   color: Theme.of(context).accentColor, 
                   width: 25, 
                   height: 25,

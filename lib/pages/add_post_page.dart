@@ -12,12 +12,12 @@ class AddItemPage extends StatefulWidget {
 class _AddItemPageState extends State<AddItemPage> {
   List<Widget> _mediaList = [];
   List<AssetEntity> _rawMediaList = [];
-  Widget selectedMedia;
-  AssetEntity selectedEntity;
-  AssetPathEntity selectedPath;
-  int currentPage = 0;
-  int lastPage;
-  String dropdownPath;
+  late Widget selectedMedia;
+  late AssetEntity selectedEntity;
+  late AssetPathEntity selectedPath;
+  late int currentPage = 0;
+  late int lastPage;
+  late String dropdownPath;
 
   @override
   void initState() {
@@ -48,13 +48,13 @@ class _AddItemPageState extends State<AddItemPage> {
         temp.add(
           FutureBuilder(
             future: asset.thumbDataWithSize(800, 800),
-            builder: (BuildContext context, snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
               if (snapshot.connectionState == ConnectionState.done)
                 return Stack(
                   children: <Widget>[
                     Positioned.fill(
                       child: Image.memory(
-                        snapshot.data,
+                        snapshot.data!,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -78,6 +78,7 @@ class _AddItemPageState extends State<AddItemPage> {
       }
 
       setState(() {
+        // ignore: unnecessary_null_comparison
         if(selectedPath == null){
           _mediaList.addAll(temp);
           _rawMediaList.addAll(rawTemp);
@@ -109,6 +110,7 @@ class _AddItemPageState extends State<AddItemPage> {
             GestureDetector(
               onTap: (){ 
 
+                // ignore: unnecessary_null_comparison
                 if(selectedEntity == null){
                   selectedEntity = _rawMediaList.first;
                 }
@@ -116,21 +118,21 @@ class _AddItemPageState extends State<AddItemPage> {
                 if(Platform.isAndroid){
                   if(selectedEntity.type == AssetType.image){
                     selectedEntity.loadFile().then((value){
-                      InstagramShare.share(value.path, "image");
+                      InstagramShare.share(value!.path, "image");
                     });
                   } else if (selectedEntity.type == AssetType.video){
                     selectedEntity.loadFile().then((value){
-                      InstagramShare.share(value.path, "video");
+                      InstagramShare.share(value!.path, "video");
                     });
                   }
                 } else if (Platform.isIOS){
                   if(selectedEntity.type == AssetType.image){
                     selectedEntity.loadFile().then((value){
-                      Instashare.shareToFeedInstagram('image/*', value.path.toString());
+                      Instashare.shareToFeedInstagram('image/*', value!.path.toString());
                     });
                   } else if (selectedEntity.type == AssetType.video){
                     selectedEntity.loadFile().then((value){
-                      Instashare.shareToFeedInstagram('video/*', value.path.toString());
+                      Instashare.shareToFeedInstagram('video/*', value!.path.toString());
                     });
                   }
                 }
@@ -147,7 +149,7 @@ class _AddItemPageState extends State<AddItemPage> {
         body: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scroll) {
             _handleScrollEvent(scroll);
-            return;
+            return true;
           },
           child: Container(
             height: size.height,
@@ -156,6 +158,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 Container(
                   height: size.width,
                   width: widget.isStory ? size.width / 2 : size.width,
+                  // ignore: unnecessary_null_comparison
                   child: selectedMedia != null
                     ? selectedMedia
                     : _mediaList.isEmpty
