@@ -3,12 +3,12 @@ part of "pages.dart";
 class PostPage extends StatefulWidget {
 
   final int index;
-  final int? length;
+  final int length;
   final String photoURL;
   final String username;
   final List<MediaModel> medias;
 
-  const PostPage({Key? key, required this.username, required this.index, this.length, required this.medias, required this.photoURL}) : super(key: key);
+  const PostPage({Key key, this.username, this.index, this.length, this.medias, this.photoURL}) : super(key: key);
 
   @override
   _PostPageState createState() => _PostPageState();
@@ -17,7 +17,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
 
   ScrollController scrollController = ScrollController();
-  late FlickMultiManager flickMultiManager;
+  FlickMultiManager flickMultiManager;
 
   @override
   void initState() { 
@@ -29,12 +29,12 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
 
     Size size = MediaQuery.of(context).size;  
-    TextStyle? subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
-    TextStyle? subtitleBoldTextStyle = Theme.of(context).textTheme.subtitle2;
+    TextStyle subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
+    TextStyle subtitleBoldTextStyle = Theme.of(context).textTheme.subtitle2;
     DateFormat _dateFormat = DateFormat('MMMM dd, yyyy');
     DateFormat _sameYearDateFormat = DateFormat('MMMM dd');
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(
         widget.index * (size.width + size.height * 0.2),
       );
@@ -71,7 +71,7 @@ class _PostPageState extends State<PostPage> {
             itemBuilder: (context, index){
 
               TransformationController _transformationController = TransformationController();
-              Matrix4? initialControllerValue;
+              Matrix4 initialControllerValue;
 
               return Container(
                 height: size.width + size.height * 0.2,
@@ -105,7 +105,7 @@ class _PostPageState extends State<PostPage> {
                         initialControllerValue = _transformationController.value;
                       },
                       onInteractionEnd: (details){
-                        _transformationController.value = initialControllerValue!;
+                        _transformationController.value = initialControllerValue;
                       },
                       maxScale: 1.5,
                       clipBehavior: Clip.none,
@@ -114,19 +114,19 @@ class _PostPageState extends State<PostPage> {
                         width: size.width,
                         child: widget.medias[index].mediaType == "IMAGE"
                           ? Image(
-                              image: NetworkImage(widget.medias[index].mediaURL ?? ""),
+                              image: NetworkImage(widget.medias[index].mediaURL),
                               fit: BoxFit.cover
                             )
                           : widget.medias[index].mediaType == "VIDEO"
                             ? FlickMultiPlayer(
-                                url: widget.medias[index].mediaURL ?? "",
+                                url: widget.medias[index].mediaURL,
                                 flickMultiManager: flickMultiManager,
-                                image: widget.medias[index].thumbnail ?? "",
+                                image: widget.medias[index].thumbnail,
                               )
                             : FutureBuilder(
-                                future: MediaModel(mediaType: '').getUserCarouselChildrenJSON(widget.medias[index].id ?? ""),
+                                future: MediaModel().getUserCarouselChildrenJSON(widget.medias[index].id),
                                 builder: (context, response){
-                                  List carouselChildren = jsonDecode(response.data as String)['data'];
+                                  List carouselChildren = jsonDecode(response.data)['data'];
                                   List<MediaModel> carouselChildrenList = [];
                     
                                   carouselChildren.forEach((media) {
@@ -151,7 +151,7 @@ class _PostPageState extends State<PostPage> {
                                                 alignment: Alignment.topRight,
                                                 children: [
                                                   Image(
-                                                    image: NetworkImage(carouselChildrenList[index].mediaURL ?? ""),
+                                                    image: NetworkImage(carouselChildrenList[index].mediaURL),
                                                     fit: BoxFit.cover
                                                   ),
                                                   Container(
@@ -184,9 +184,9 @@ class _PostPageState extends State<PostPage> {
                                                 alignment: Alignment.topRight,
                                                 children: [
                                                   FlickMultiPlayer(
-                                                      url: carouselChildrenList[index].mediaURL ?? "",
+                                                      url: carouselChildrenList[index].mediaURL,
                                                       flickMultiManager: flickMultiManager,
-                                                      image: carouselChildrenList[index].thumbnail ?? "",
+                                                      image: carouselChildrenList[index].thumbnail,
                                                   ),
                                                   Container(
                                                     height: (size.width) / 12.5,
@@ -244,9 +244,9 @@ class _PostPageState extends State<PostPage> {
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                           Text(
-                            DateTime.parse(widget.medias[index].timeStamp ?? "").year == DateTime.now().year
-                            ? _sameYearDateFormat.format(DateTime.parse(widget.medias[index].timeStamp ?? ""))
-                            : _dateFormat.format(DateTime.parse(widget.medias[index].timeStamp ?? "")),
+                            DateTime.parse(widget.medias[index].timeStamp).year == DateTime.now().year
+                            ? _sameYearDateFormat.format(DateTime.parse(widget.medias[index].timeStamp))
+                            : _dateFormat.format(DateTime.parse(widget.medias[index].timeStamp)),
                             style: TextStyle(
                               color: Theme.of(context).accentColor.withOpacity(0.75),
                               fontSize: 13,

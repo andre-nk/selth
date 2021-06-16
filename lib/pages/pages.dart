@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:instagram_share/instagram_share.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:instashare/instashare.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';

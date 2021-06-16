@@ -1,7 +1,7 @@
 part of "pages.dart";
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({Key key }) : super(key: key);
 
   @override
   _AuthPageState createState() => _AuthPageState();

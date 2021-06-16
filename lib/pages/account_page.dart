@@ -4,7 +4,7 @@ class AccountPage extends StatefulWidget {
   final Map userData;
   final String userToken;
 
-  const AccountPage({Key? key, required this.userData, required this.userToken}) : super(key: key);
+  const AccountPage({Key key, this.userData, this.userToken}) : super(key: key);
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -144,7 +144,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  PreferredSizeWidget getAppBar(size) {
+  Widget getAppBar(size) {
     return AppBar(
       elevation: 0,
       title: Row(
@@ -180,9 +180,9 @@ class _AccountPageState extends State<AccountPage> {
 
   Widget getBody(size) {
 
-    TextStyle? headlineTextStyle = Theme.of(context).textTheme.headline6;
-    TextStyle? subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
-    TextStyle? subtitleBoldTextStyle = Theme.of(context).textTheme.subtitle2;
+    TextStyle headlineTextStyle = Theme.of(context).textTheme.headline6;
+    TextStyle subtitleTextStyle = Theme.of(context).textTheme.subtitle1;
+    TextStyle subtitleBoldTextStyle = Theme.of(context).textTheme.subtitle2;
 
     return Scaffold(
       appBar: getAppBar(size),
@@ -227,7 +227,7 @@ class _AccountPageState extends State<AccountPage> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
-                                      image: NetworkImage(userData.profilePicURL ?? ""),
+                                      image: NetworkImage(userData.profilePicURL),
                                       fit: BoxFit.cover
                                     )
                                   ),
@@ -256,7 +256,7 @@ class _AccountPageState extends State<AccountPage> {
                                       Column(
                                         children: [
                                           Text(
-                                            userData.followers ?? "",
+                                            userData.followers,
                                             style: headlineTextStyle
                                           ),
                                           SizedBox(height: (size.height - 10) * 0.01),
@@ -269,7 +269,7 @@ class _AccountPageState extends State<AccountPage> {
                                       Column(
                                         children: [
                                           Text(
-                                            userData.following ?? "",
+                                            userData.following,
                                             style: headlineTextStyle
                                           ),
                                           SizedBox(height: (size.height - 10) * 0.01),
@@ -286,9 +286,9 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
-                          Text(userData.username ?? "", style: subtitleBoldTextStyle),
+                          Text(userData.username, style: subtitleBoldTextStyle),
                           SizedBox(height: 10),
-                          Text(userData.bio ?? "", style: subtitleTextStyle),   
+                          Text(userData.bio, style: subtitleTextStyle),   
                           userData.externalURL != null
                             ? Linkify(text: userData.externalURL ?? "", style: subtitleTextStyle)
                             : SizedBox()
@@ -311,7 +311,7 @@ class _AccountPageState extends State<AccountPage> {
                                       username: widget.userData['username'],
                                       index: index,
                                       medias: mediaList,
-                                      photoURL: userData.profilePicURL ?? ""
+                                      photoURL: userData.profilePicURL
                                     ), transition: Transition.cupertino);
                                   },
                                   child: Container(
@@ -319,7 +319,7 @@ class _AccountPageState extends State<AccountPage> {
                                     width: (size.width - 6) / 3,
                                     child: mediaList[index].mediaType == "IMAGE"
                                       ? Image(
-                                          image: NetworkImage(mediaList[index].mediaURL ?? ""),
+                                          image: NetworkImage(mediaList[index].mediaURL),
                                           fit: BoxFit.cover
                                         )
                                       : mediaList[index].mediaType == "VIDEO"
@@ -327,7 +327,7 @@ class _AccountPageState extends State<AccountPage> {
                                             alignment: Alignment.topRight,
                                             children: [
                                               Image(
-                                                image: NetworkImage(mediaList[index].thumbnail ?? ""),
+                                                image: NetworkImage(mediaList[index].thumbnail),
                                                 fit: BoxFit.cover
                                               ),
                                               Icon(Icons.play_arrow_rounded, color: Colors.white, size: 32),
@@ -337,7 +337,7 @@ class _AccountPageState extends State<AccountPage> {
                                             alignment: Alignment.topRight,
                                             children: [
                                               Image(
-                                                image: NetworkImage(mediaList[index].mediaURL ?? ""),
+                                                image: NetworkImage(mediaList[index].mediaURL),
                                                 fit: BoxFit.cover
                                               ),
                                               Padding(

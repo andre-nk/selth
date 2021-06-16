@@ -72,7 +72,7 @@ class AppThemeNotifier extends StateNotifier<bool> {
 
 class ThemeSharedUtility {
   ThemeSharedUtility({
-    required this.sharedPreferences,
+    this.sharedPreferences,
   });
 
   final SharedPreferences sharedPreferences;

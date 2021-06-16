@@ -6,10 +6,10 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 class FlickMultiPlayer extends StatefulWidget {
   const FlickMultiPlayer(
-      {Key? key,
-      required this.url,
-      required this.image,
-      required this.flickMultiManager})
+      {Key key,
+      @required this.url,
+      this.image,
+      @required this.flickMultiManager})
       : super(key: key);
 
   final String url;
@@ -21,7 +21,7 @@ class FlickMultiPlayer extends StatefulWidget {
 }
 
 class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
-  late FlickManager flickManager;
+  FlickManager flickManager;
 
   @override
   void initState() {

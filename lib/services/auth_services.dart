@@ -5,12 +5,12 @@ class AuthServices{
     simpleAuth.InstagramApi _igApi
   ) async {
 
-    Map? _userData;
+    Map _userData;
     UserDataSharedUtility userModel = UserDataSharedUtility();
 
     await _igApi.authenticate().then(
-      (simpleAuth.Account? _user) async {
-        simpleAuth.OAuthAccount user = _user as simpleAuth.OAuthAccount;
+      (simpleAuth.Account _user) async {
+        simpleAuth.OAuthAccount user = _user;
 
         var refreshResponse = await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
           '/access_token',
@@ -41,6 +41,6 @@ class AuthServices{
       },
     );
 
-    return _userData!;
+    return _userData;
   }
 }
